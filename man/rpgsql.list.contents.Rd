@@ -1,8 +1,7 @@
-\name{List and remove database tables}
+\name{List database tables}
 \alias{db.ls}
 \alias{db.rm}
-\alias{db.table.exists}
-\title{List or remove database tables; check if table exists in database}
+\title{list database tables}
 \usage{
 db.ls(pattern, all=F)
 db.rm(..., pattern, ask=T)

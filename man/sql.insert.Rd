@@ -1,6 +1,6 @@
 \name{sql.insert}
 \alias{sql.insert}
-\title{Append data to a postgres table}
+\title{Append data to a PostgreSQL table}
 \usage{
 sql.insert(into, column.names, values, query)
 }

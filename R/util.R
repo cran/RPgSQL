@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: util.R,v $
-# $Date: 2000/07/12 19:31:40 $
-# $Revision: 1.2 $
+# $Date: 2000/07/25 16:03:45 $
+# $Revision: 1.3 $
 # Copyright (C) 1999 Timothy H. Keitt
 format.table.name <- function(table.name) {
   if (inherits(table.name, "db.proxy"))
@@ -36,3 +36,16 @@ format.null.values <- function(...) {
   return(gsub(pattern, "NULL", as.character(...)))
 }
 
+psql <- function(dbname=NULL, host=NULL, port=NULL) {
+  if (db.connection.open()) {
+    if (is.null(dbname)) dbname <- db.name()
+    if (is.null(host)) host <- db.host.name()
+    if (is.null(port)) port <- db.connection.port()
+  }
+  command <- "psql"
+  if (!is.null(dbname)) command <- paste(command, "-d", dbname)
+  if (!is.null(host) && length(host) > 1)
+    command <- paste(command, "-h", host)
+  if (!is.null(port)) command <- paste(command, "-p", port)
+  system(command)
+}

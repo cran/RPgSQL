@@ -1,6 +1,6 @@
 Package: RPgSQL
-Version: 0.7-1
-Date: Wed Jul 12 13:57:15 PDT 2000
+Version: 0.8-1
+Date: Wed Aug 16 14:18:54 PDT 2000
 Title: PostgreSQL access
 Author: Timothy H. Keitt <thk@users.sourceforge.net>
 Description: Provides methods for accessing data stored in PostgreSQL

@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: sql.R,v $
-# $Date: 2000/07/12 19:31:40 $
-# $Revision: 1.2 $
+# $Date: 2000/07/14 20:54:46 $
+# $Revision: 1.3 $
 # Copyright (C) 1999 Timothy H. Keitt
 
 # You can't use this function to do joins
@@ -25,8 +25,12 @@ sql.select <- function(columns="*", into, from, where, group.by, having,
   if (!missing(offset))
     query <- paste(query, "OFFSET", offset)
   if (exec) {
+    on.exit(db.clear.result())
     db.execute(query, clear=F)
-    if (missing(into)) return(db.fetch.result()) else return(invisible())
+    if (missing(into))
+      return(db.fetch.result())
+    else
+      return(invisible())
   } else {
     return(query)
   }

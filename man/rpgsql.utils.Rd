@@ -1,11 +1,4 @@
 \name{Utilities}
-\alias{format.table.name}
-\alias{check.table.name}
-\alias{make.db.names}
-\alias{list.to.csv}
-\alias{single.quote}
-\alias{double.quote}
-\alias{format.null.values}
 \title{RPgSQL utility functions}
 \usage{
 format.table.name(table.name)

@@ -1,9 +1,8 @@
 \name{Result attributes}
 \alias{db.result.columns}
 \alias{db.result.rows}
-\alias{db.result.column.number}
-\alias{db.result.column.type}
 \alias{db.result.column.names}
+\alias{db.result.column.type}
 \title{Information about the result buffer}
 \usage{
 db.result.columns()

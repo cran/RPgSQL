@@ -1,19 +1,19 @@
 # -*- R -*-
 # $RCSfile: libpq.R,v $
-# $Date: 2000/07/12 19:31:40 $
-# $Revision: 1.3 $
+# $Date: 2000/07/25 16:03:45 $
+# $Revision: 1.5 $
 # Copyright (C) 1999 Timothy H. Keitt
 # Licence: GPL
-db.connect <- function(host=NULL, port=NULL, dbname=NULL, user=NULL,
-                       password=NULL, authtype=NULL, options=NULL,
-                       tty=NULL, verbose=T) {
+db.connect <- function(host=NULL, hostaddr=NULL, port=NULL,
+                       dbname=NULL, user=NULL, password=NULL,
+                       options=NULL, tty=NULL, verbose=T) {
   conninfo <- character(1)
   if (!is.null(host)) conninfo <- paste(conninfo, "host =", host)
+  if (!is.null(hostaddr)) conninfo <- paste(conninfo, "hostaddr =", hostaddr)
   if (!is.null(port)) conninfo <- paste(conninfo, "port =", port)
   if (!is.null(dbname)) conninfo <- paste(conninfo, "dbname =", dbname)
   if (!is.null(user)) conninfo <- paste(conninfo, "user =", user)
   if (!is.null(password)) conninfo <- paste(conninfo, "password =", password)
-  if (!is.null(authtype)) conninfo <- paste(conninfo, "authtype =", authtype)
   if (!is.null(options)) conninfo <- paste(conninfo, "options =", options)
   if (!is.null(tty)) conninfo <- paste(conninfo, "tty =", tty)
   .C("rpgsql_connect", conninfo)
@@ -30,12 +30,12 @@ db.connect <- function(host=NULL, port=NULL, dbname=NULL, user=NULL,
 }
 
 db.disconnect <- function() {
-  .C("rpgsql_finish")
+  .C("rpgsql_connection_finish")
   return(invisible())
 }
 
 db.connection.status <- function()
-  return(.C("rpgsql_status", status=integer(1))$status)
+  return(.C("rpgsql_connection_status", status=integer(1))$status)
 
 db.connection.open <- function()
   return(db.connection.status() == 0)
@@ -46,12 +46,23 @@ db.error.message <- function()
 db.name <- function()
   return(.C("rpgsql_db_name", name=character(1))$name)
 
-db.host.name <- function() {
-  name <- .C("rpgsql_host_name", name=character(1))$name
-  if (name == "")
-    name <- "localhost"
-  return(name)
-}
+db.host.name <- function()
+  .C("rpgsql_host_name", name=character(1))$name
+
+db.connection.options <- function()
+  return(.C("rpgsql_db_options", options=character(1))$options)
+
+db.user.name <- function()
+  return(.C("rpgsql_user_name", name=character(1))$name)
+
+db.password <- function()
+  return(.C("rpgsql_password", password=character(1))$password)
+
+db.connection.port <- function()
+  return(.C("rpgsql_port", port=character(1))$port)
+
+db.debug.tty <- function()
+  return(.C("rpgsql_tty", tty=character(1))$tty)
 
 db.execute <- function(..., clear=T, report.errors=T) {
   if (clear) on.exit(db.clear.result())
@@ -61,7 +72,7 @@ db.execute <- function(..., clear=T, report.errors=T) {
     if (result.status == 6) warning(db.error.message())
     if (result.status == 7) stop(db.error.message())
   }
-  return(invisible())
+  return(invisible(result.status))
 }
 
 db.clear.result <- function() {
@@ -70,18 +81,18 @@ db.clear.result <- function() {
 }
 
 db.result.columns <- function()
-  return(.C("rpgsql_nfields", columns=integer(1))$columns)
+  return(.C("rpgsql_result_nfields", columns=integer(1))$columns)
 
 db.result.rows <- function()
-  return(.C("rpgsql_ntuples", rows=integer(1))$rows)
+  return(.C("rpgsql_result_ntuples", rows=integer(1))$rows)
 
 db.result.column.number <- function(col.name) {
-  return(.C("rpgsql_fnumber", as.character(col.name),
+  return(.C("rpgsql_result_fnumber", as.character(col.name),
             index=integer(1))$index + 1)
 }
 
 db.result.column.type <- function(col=1)
-  return(.C("rpgsql_ftype", as.integer(col), type=integer(1))$type)
+  return(.C("rpgsql_result_ftype", as.integer(col), type=integer(1))$type)
 
 db.result.status <- function()
   return(.C("rpgsql_result_status", status=integer(1))$status)
@@ -89,7 +100,8 @@ db.result.status <- function()
 db.result.column.names <- function() {
   names <- vector(mode="character")
   for (i in seq(from=1, length=db.result.columns()))
-    names[i] <- .C("rpgsql_fname", as.integer(i), name=character(1))$name
+    names[i] <- .C("rpgsql_result_fname", as.integer(i),
+                   name=character(1))$name
   return(names)
 }
 

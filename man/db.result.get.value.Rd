@@ -17,8 +17,7 @@ db.result.get.value(row=1, col=1)
 }
 \author{Timothy H. Keitt}
 \note{Row and column numbers are always 1-based}
-\seealso{\code{\link{db.execute}},\code{\link{db.result.rows}}
-  \code{\link{db.result.columns}}}
+\seealso{\code{\link{db.execute}}, \code{\link{db.result.rows}}, \code{\link{db.result.columns}}}
 
 \examples{
 if (db.connection.open()) {

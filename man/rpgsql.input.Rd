@@ -9,7 +9,7 @@ db.fetch.result(row.names, col.names, as.is=F)
 db.read.column(column=1, as.is=F)
 }
 \arguments{
- \item{name}{The name of a postgres table or a proxy object}
+ \item{name}{The name of a PostgreSQL table or a proxy object}
  \item{row.names}{A list of row names to apply to the data frame}
  \item{col.names}{A list of column names for the resulting data frame}
  \item{as.is}{A boolean or vector of booleans or column indices

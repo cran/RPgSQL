@@ -1,10 +1,4 @@
 \name{Type conversions}
-\alias{rpgsql.data.type}
-\alias{rpgsql.data.type.default}
-\alias{rpgsql.format.values}
-\alias{rpgsql.format.values.default}
-\alias{rpgsql.cast.values}
-\alias{rpgsql.cast.values.default}
 \title{Conversion between R and PostgreSQL data types}
 \usage{
 rpgsql.data.type(x)
@@ -19,7 +13,7 @@ rpgsql.cast.values.default(x)
 }
 \description{
   \code{rpgsql.data.type} is a generic function that returns a
-  PostgreSQL type based on the type of data containted in \code{x}.\cr
+  PostgreSQL type based on the type of data contained in \code{x}.\cr
   \code{rpgsql.format.values} is a generic function that returns
   appropriate formatted strings compatible with the PgSQL insert
   command.\cr
@@ -32,20 +26,20 @@ rpgsql.cast.values.default(x)
 
   First, you must assign your type a class name.
 
-  Second, you must write a \code{\link{rpgsql.data.type}} method for
+  Second, you must write a \code{rpgsql.data.type} method for
   your class.  This function must return a valid PostgreSQL type name
   compatible with the SQL \code{create table} command.
 
-  Third, you must write a \code{\link{rpgsql.format.values}} method for
-  your class.  This function will recieve a vector of values of your
+  Third, you must write a \code{rpgsql.format.values} method for
+  your class.  This function will receive a vector of values of your
   class and must convert these values into strings storable in PgSQL.
 
-  Fourth, you must write a \code{\link{rpgsql.cast.values}} method. This
+  Fourth, you must write a \code{rpgsql.cast.values} method. This
   method does not get called for your class.  Instead it gets called for
   the class named for the equivalent PgSQL type number (see
   \code{\link{db.result.column.type}}).  For example, the PgSQL "DATE"
   type has number 1082, so you must write a method for class "1082" (see
-  example below).  This function will recieve a vector of strings as
+  example below).  This function will receive a vector of strings as
   returned from the PgSQL \code{select} command and must convert these
   strings into instances of your class. 
 }

@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: io.R,v $
-# $Date: 2000/07/12 19:31:40 $
-# $Revision: 1.3 $
+# $Date: 2000/07/29 22:03:24 $
+# $Revision: 1.4 $
 # Copyright (C) 1999 Timothy H. Keitt
 # Licence: GPL
 db.ls <- function(pattern=NULL, all=F) {
@@ -22,8 +22,9 @@ db.rm <- function(..., pattern=NULL, ask=T) {
   table.list <- list(...)
   if (!is.null(pattern))
     table.list <- append(table.list, db.ls(pattern=pattern))
+  table.list <- make.names(table.list)
   for (i in seq(along=table.list)) {
-    name <- make.names(table.list[[i]])
+    name <- table.list[[i]]
     if (db.table.exists(name)) {
       if (ask) {
         ans <- readline(paste(sep="", "Destroy table ", name, "? "))
@@ -46,9 +47,8 @@ db.table.exists <- function(name) {
   return(db.result.rows() > 0)
 }
 
-db.read.table <- function(name=NULL, row.names=NULL,
+db.read.table <- function(name, row.names=NULL,
                           col.names=NULL, as.is=F) {
-  if (is.null(name)) stop("You must provide a table name")
   on.exit(db.clear.result())
   db.execute("SELECT * FROM", format.table.name(name), clear=F)
   out <- db.fetch.result(row.names, col.names, as.is)

@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: proxy.R,v $
-# $Date: 2000/08/16 22:05:13 $
-# $Revision: 1.9 $
+# $Date: 2000/07/29 22:03:24 $
+# $Revision: 1.7 $
 # Copyright (C) 1999 Timothy H. Keitt
 
 # The vacuum function is postgres specific
@@ -12,7 +12,7 @@ bind.db.proxy <- function(table.names, vacuum=F) {
                   port=db.connection.port(), dbname=db.name(),
                   user=db.user.name(), password=db.password())
     class(proxy) <- c("db.proxy", "data.frame")
-    if (vacuum) db.execute("VACUUM ANALYZE", table.names[i])
+    if (vacuum) db.execute("VACUUM ANALYZE", name)
     assign(table.names[i], proxy, envir=sys.frame(sys.parent()))
   }
   return(invisible())

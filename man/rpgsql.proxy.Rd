@@ -1,21 +1,5 @@
 \name{Proxy interface}
 \alias{bind.db.proxy}
-\alias{row.names}
-\alias{row.names.default}
-\alias{row.names.db.proxy}
-\alias{dimnames.db.proxy}
-\alias{as.list.db.proxy}
-\alias{as.matrix.db.proxy}
-\alias{$.db.proxy}
-\alias{[[.db.proxy}
-\alias{[.db.proxy}
-\alias{as.data.frame.db.proxy}
-\alias{db.has.row.names}
-\alias{names.db.proxy}
-\alias{dim.db.proxy}
-\alias{summary.db.proxy}
-\alias{print.db.proxy}
-\alias{db.table.name}
 \title{Bind a proxy object to a PostgreSQL table}
 \usage{
 bind.db.proxy(table.name, vacuum=F)
@@ -74,12 +58,6 @@ db.table.name(proxy)
   In order to make proxy objects work, I had to make
   \code{\link{row.names}} a generic object method.  This may break other
   packages.
-
-  You cannot use the "$" operator on db.proxy objects.  The reason for
-  this is that the "$" operator is not part of the data.frame
-  interface.  Using "$" simply exposes the "listness" of the underlying
-  implementation of a data.frame.  There is no way to overload the "$"
-  operator.
 }
 
 \examples{

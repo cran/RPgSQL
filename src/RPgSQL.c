@@ -1,7 +1,7 @@
 /* -*- C -*-
  * $RCSfile: RPgSQL.c,v $
- * $Date: 2000/05/25 19:15:51 $
- * $Revision: 1.1.1.1 $
+ * $Date: 2000/07/25 16:03:46 $
+ * $Revision: 1.2 $
  * Copyright (C) 1999 Timothy H. Keitt
  */
 
@@ -31,7 +31,7 @@ rpgsql_connect(const char **conninfo) {
 }
 
 void
-rpgsql_status(int* status) {
+rpgsql_connection_status(int* status) {
   if (connection == NULL) {
     *status = CONNECTION_BAD;
   } else {
@@ -50,8 +50,6 @@ rpgsql_error_message(char **message) {
 void
 rpgsql_db_name(char **name) {
   if (connection != NULL) *name = PQdb(connection);
-  /* This is necessary to avoid a core dump when passing a null
-     pointer */
   if (*name == NULL) *name = "";
   return;
 }
@@ -59,14 +57,52 @@ rpgsql_db_name(char **name) {
 void
 rpgsql_host_name(char **name) {
   if (connection != NULL) *name = PQhost(connection);
-  /* This is necessary to avoid a core dump when passing a null
-     pointer */
+  if (*name == NULL) *name = "";
+  return;
+}
+
+rpgsql_db_options(char **options) {
+  if (connection != NULL) *options = PQoptions(connection);
+  if (*options == NULL) *options = "";
+  return;
+}
+
+
+rpgsql_user_name(char **name) {
+  if (connection != NULL) *name = PQuser(connection);
   if (*name == NULL) *name = "";
   return;
 }
 
 void
-rpgsql_finish(void) {
+rpgsql_password(char **password) {
+  if (connection != NULL) *password = PQpass(connection);
+  if (*password == NULL) *password = "";
+  return;
+}
+
+void
+rpgsql_port(char **port) {
+  if (connection != NULL) *port = PQport(connection);
+  if (*port == NULL) *port = "";
+  return;
+}
+
+void
+rpgsql_tty(char **tty) {
+  if (connection != NULL) *tty = PQtty(connection);
+  if (*tty == NULL) *tty = "";
+  return;
+}
+
+int
+rpgsql_pid() {
+  if (connection != NULL) return  PQbackendPID(connection);
+  return;
+}
+
+void
+rpgsql_connection_finish(void) {
   /* Disconnect from backend */
   if (connection != NULL) {
     PQfinish(connection);
@@ -77,7 +113,7 @@ rpgsql_finish(void) {
 
 void
 rpgsql_exec(const char **query) {
-  if (echo==TRUE) printf("%s\n", *query);
+  if (echo==TRUE) Rprintf("%s\n", *query);
   /* Free previous results */
   if (result != NULL) PQclear(result);
   /* Query backend */
@@ -96,52 +132,49 @@ rpgsql_result_status(int *status) {
 }
 
 void
-rpgsql_ntuples(int *ntuples) {
+rpgsql_result_ntuples(int *ntuples) {
   if (result != NULL) *ntuples = PQntuples(result);
   return;
 }
 
 void
-rpgsql_nfields(int *nfields) {
+rpgsql_result_nfields(int *nfields) {
   if (result != NULL) *nfields = PQnfields(result);
   return;
 }
 
 void
-rpgsql_fname(int * const index , char **fname) {
+rpgsql_result_fname(int * const index , char **fname) {
   /* libpq uses 0-based indexing */
   if (result != NULL) *fname = PQfname(result, --(*index));
+  if (*fname == NULL) *fname = "";
   return;
 }
 
 void
-rpgsql_fnumber(const char ** fname, int *index) {
+rpgsql_result_fnumber(const char ** fname, int *index) {
   if (result != NULL) *index = PQfnumber(result, *fname);
   return;
 }
 
 void
-rpgsql_ftype(int * const index, int *type) {
-  /* libpq uses 0-based indexing */
+rpgsql_result_ftype(int * const index, int *type) {
   if (result != NULL) *type = PQftype(result, --(*index));
   return;
 }
 
 void
-rpgsql_fsize(int * const index, int *size) {
-  /* libpq uses 0-based indexing */
+rpgsql_result_fsize(int * const index, int *size) {
   if (result != NULL) *size = PQfsize(result, --(*index));
   return;
 }
 
 void
 rpgsql_get_value(int * const tuple, int * const field, char **value) {
-  /* libpq uses 0-based indexing */
   const int t = *tuple - 1;
   const int f = *field - 1;
   if (result != NULL) {
 #ifdef RPGSQL_BOUNDS_CHECKING
-    /* libpq sometimes dumps core when requests are out of bounds */
     if (t < 0 ||
 	f < 0 ||
 	t > PQntuples(result) - 1 ||
@@ -155,7 +188,7 @@ rpgsql_get_value(int * const tuple, int * const field, char **value) {
   return;
 }
 
-/* These can be used when returning binary data */
+/* These can be used when returning binary data
 void
 rpgsql_get_int_value(int * const tuple, int * const field, int *value) {
   if (result != NULL) 
@@ -169,9 +202,11 @@ rpgsql_get_double_value(int * const tuple, int * const field, double *value) {
     value = (double *) PQgetvalue(result, --(*tuple), --(*field));
   return;
 }
+*/
 
 void
-rpgsql_get_length(int * const tuple, int * const field, int *length) {
+rpgsql_get_field_length(int * const tuple, int * const field,
+			int *length) {
   if (result != NULL)
     *length = PQgetlength(result, --(*tuple), --(*field));
   return;
