@@ -1,36 +1,15 @@
-bind.proxy               Bind a proxy object to a PostgreSQL table
-check.table.name         verify and format table name
-convert.table.name       table name conversion utility
-db.clear.result          Free allocated resources
-db.column.names          Return column names
-db.column.number         Return the number of a named column
-db.column.type           Returns the data type code for a given column
-db.connect               Connect to database
-db.connection.status     Get connection status
-db.disconnect            End connection to postgres backend
-db.error.message         Get current error message from libpq
-db.execute               Send commands to the postgres backend
-db.fnumber               Return the number of a named column
-db.ftype                 Returns the data type code for a given column
-db.get.value             Fetch values from returned tuples
-db.ls                    List database tables
-db.name                  Return name of currently connected database
-db.read.column           Read a column of data from the last query result
-db.read.table            Read a postgres table into a data frame
-db.result.columns        Number of columns in last query result
-db.result.rows           Number of rows in last query result
-db.result.status         Get status of last query
-db.rm                    Destroy postgres tables
-db.table.exists          Return true if table name exists in database
+db.result.get.value      Fetch a value from returned tuples
 db.write.table           Write an R data frame into a postgres table
-insert                   Append data to a postgres table
-list.to.csv              Convert a list of values to a string containing
-                         comma separated values
-rpgsql.cast.values       Convert PgSQL output to R objects or types
-rpgsql.data.type         Map R classes to PostgreSQL data types
-rpgsql.format.values     Stringify R data into PgSQL compatible form
-select                   Format and optionally execute an SQL select
+Manage connections       Open and manage database connection
+Execute queries          Send commands to the postgres backend
+Read from database       Read query results into a data frame
+List and remove database tables
+                         List or remove database tables; check if table
+                         exists in database
+Proxy interface          Bind a proxy object to a PostgreSQL table
+Result attributes        Information about the result buffer
+Type conversions         Conversion between R and PostgreSQL data types
+Utilities                RPgSQL utility functions
+sql.insert               Append data to a postgres table
+sql.select               Format and optionally execute an SQL select
                          query
-single.quote             convert arguments to a single quoted string
-to.R.name                Convert a postgres name to an R name
-to.db.name               Convert an R name to a postgres friendly name

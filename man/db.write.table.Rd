@@ -20,10 +20,15 @@ db.write.table(data, name=deparse(substitute(data)), no.clobber=T, write.row.nam
 \seealso{\code{\link{db.read.table}}}
 
 \examples{
-data(airquality)
-misc.data <- airquality[1:10,]
-db.write.table(misc.data, no.clobber=F)
-db.read.table("misc.data")
-db.rm("misc.data", ask=F)
+if (db.connection.open()) {
+  data(airquality)
+  rpgsql.test.data <- airquality[1:10,]
+  rm(airquality)
+  db.write.table(rpgsql.test.data, no.clobber=F)
+  if (db.table.exists('rpgsql_test_data')) {
+    db.read.table('rpgsql.test.data')
+    db.rm('rpgsql.test.data', ask=F)
+  }
+}
 }
 \keyword{database}

@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: types.R,v $
-# $Date: 2000/01/08 20:38:33 $
-# $Revision: 3.0 $
+# $Date: 2000/05/25 19:15:51 $
+# $Revision: 1.1.1.1 $
 # Copyright (C) 1999 Timothy H. Keitt
 
 rpgsql.data.type <- function(x) UseMethod("rpgsql.data.type")
@@ -52,6 +52,7 @@ rpgsql.cast.values.1042 <- function(x) return(as.factor(x))
 rpgsql.cast.values.1043 <- function(x) return(as.factor(x))
 rpgsql.cast.values.1082 <- function(x) return(dates(x, format='m-d-y'))
 rpgsql.cast.values.1083 <- function(x) return(times(x))
+rpgsql.cast.values.1700 <- function(x) return(as.double(x))
 
 
 

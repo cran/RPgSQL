@@ -1,17 +1,30 @@
-\name{rpgsql.data.type}
+\name{Type conversions}
 \alias{rpgsql.data.type}
 \alias{rpgsql.data.type.default}
-\title{Map R classes to PostgreSQL data types}
+\alias{rpgsql.format.values}
+\alias{rpgsql.format.values.default}
+\alias{rpgsql.cast.values}
+\alias{rpgsql.cast.values.default}
+\title{Conversion between R and PostgreSQL data types}
 \usage{
 rpgsql.data.type(x)
 rpgsql.data.type.default(x)
+rpgsql.format.values(x)
+rpgsql.format.values.default(x)
+rpgsql.cast.values(x)
+rpgsql.cast.values.default(x)
 }
 \arguments{
- \item{x}{A column extracted from a data frame}
+ \item{x}{A vector of data values}
 }
 \description{
   \code{rpgsql.data.type} is a generic function that returns a
-  PostgreSQL type based on the type of data containted in \code{x}.
+  PostgreSQL type based on the type of data containted in \code{x}.\cr
+  \code{rpgsql.format.values} is a generic function that returns
+  appropriate formatted strings compatible with the PgSQL insert
+  command.\cr
+  \code{rpgsql.cast.values} is a generic function that converts PgSQL
+  character output to R objects or types.
 }
 \details{
   To enable the RPgSQL package to use a new type, you need to do the
@@ -27,21 +40,16 @@ rpgsql.data.type.default(x)
   your class.  This function will recieve a vector of values of your
   class and must convert these values into strings storable in PgSQL.
 
-  Fourth, you must write a \code{\link{rpgsql.cast.values}} method.
-  This method does not get called for your class.  Instead it gets
-  called for the class named for the equivalent PgSQL type number (see
-  \code{\link{db.column.type}}).  For example, the PgSQL "DATE" type has
-  number 1082, so you must write a method for class "1082" (see example
-  below).  This function will recieve a vector of strings as returned
-  from the PgSQL \code{select} command and must convert these strings
-  into instances of your class.
-}
-\value{
-  The name of a PostgreSQL data type
+  Fourth, you must write a \code{\link{rpgsql.cast.values}} method. This
+  method does not get called for your class.  Instead it gets called for
+  the class named for the equivalent PgSQL type number (see
+  \code{\link{db.result.column.type}}).  For example, the PgSQL "DATE"
+  type has number 1082, so you must write a method for class "1082" (see
+  example below).  This function will recieve a vector of strings as
+  returned from the PgSQL \code{select} command and must convert these
+  strings into instances of your class. 
 }
 \author{Timothy H. Keitt}
-\seealso{\code{\link{rpgsql.format.values}},
-  \code{\link{rpgsql.cast.values}}}
 \examples{
   # Note: these are already defined in RPgSQL
   # Objects of class "date" are mapped to PgSQL type "DATE"

@@ -1,13 +1,13 @@
 # -*- R -*-
 # $RCSfile: proxy.R,v $
-# $Date: 2000/01/08 20:38:33 $
-# $Revision: 3.0 $
+# $Date: 2000/07/12 19:31:40 $
+# $Revision: 1.2 $
 # Copyright (C) 1999 Timothy H. Keitt
 
 # The vacuum function is postgres specific
-bind.proxy <- function(table.name, vacuum=F) {
+bind.db.proxy <- function(table.name, vacuum=F) {
   for (i in seq(along=table.name)) {
-    name <- to.R.name(table.name[[i]])
+    name <- make.names(table.name[[i]])
     class(name) <- c("db.proxy", "data.frame")
     attr(name, "dbname") <- db.name()
     attr(name, "host") <- db.host.name()
@@ -24,7 +24,7 @@ row.names <- function(x) UseMethod("row.names")
 row.names.default <- function(x) attr(x, "row.names")
 row.names.db.proxy <- function(x) {
   if (db.has.row.names(x)) {
-    return(row.names(select("rpgsql.row.names", from=x)))
+    return(row.names(sql.select("rpgsql.row.names", from=x)))
   } else {
     return(as.character(seq(from=1, length=nrow(x))))
   }
@@ -49,12 +49,12 @@ as.matrix.db.proxy <- function(proxy)
     if (is.character(i)) i <- match(i, row.names(proxy))
     if (length(j) > 1) stop("invalid subscript")
     if (mode(j) == "numeric") j <- names(proxy)[j]
-    query <- select(j, from=proxy, limit=1, offset=i-1, exec=F)
+    query <- sql.select(j, from=proxy, limit=1, offset=i-1, exec=F)
     db.execute(query, clear=F)
-    return(db.get.value())
+    return(db.result.get.value())
   }
   if (is.numeric(i)) i <- names(proxy)[i]
-  query <- select(columns=i, from=proxy, exec=F)
+  query <- sql.select(columns=i, from=proxy, exec=F)
   db.execute(query, clear=F)
   return(db.read.column())
 }
@@ -87,17 +87,21 @@ as.matrix.db.proxy <- function(proxy)
     columns <- "*"
   }
   if (missing(rows)) {
-    return(select(columns, from=proxy))
+    return(sql.select(columns, from=proxy))
   } else {
     # This needs to be generalized to allow extraction
     # of non-contiguous rows of data
     first.row <- min(rows)
     n <- max(rows) - first.row + 1
-    data <- select(columns, from=proxy, limit=n, offset=first.row-1)
+    data <- sql.select(columns, from=proxy, limit=n,
+                       offset=first.row-1)
     row.names(data) <- seq(from=first.row, length=n)
     return(data)
   }
 }
+
+"[<-.db.proxy" <- function(x) stop("Not implemented")
+"[[<-.db.proxy" <- function(x) stop("Not implemented")
 
 as.data.frame.db.proxy <- function(x) return(db.read.table(x))
 
@@ -106,19 +110,19 @@ db.has.row.names <- function(proxy)
 
 names.db.proxy <- function(proxy) {
   db.execute("SELECT typrelid FROM pg_type WHERE typname =",
-             single.quote(to.db.name(db.table.name(proxy))), clear=F)
-  relid <- db.get.value()
+             single.quote(make.db.names(db.table.name(proxy))), clear=F)
+  relid <- db.result.get.value()
   db.execute("SELECT attname FROM pg_attribute WHERE attrelid =",
              relid, "AND attnum > 0", clear=F)
-  return(to.R.name(db.read.column(as.is=T)))
+  return(make.names(db.read.column(as.is=T)))
 }
 
 dim.db.proxy <- function(proxy) {
   on.exit(db.clear.result())
-  name <- to.db.name(db.table.name(proxy))
+  name <- make.db.names(db.table.name(proxy))
   db.execute("SELECT reltuples, relnatts FROM pg_class",
              "WHERE relname =", single.quote(name), clear=F)
-  return(as.integer(c(db.get.value(), db.get.value(col=2))))
+  return(as.integer(c(db.result.get.value(), db.result.get.value(col=2))))
 }
 
 summary.db.proxy <- function(proxy) {

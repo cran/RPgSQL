@@ -1,3 +1,13 @@
+Wed Jul 12 13:57:15 PDT 2000
+    Major rewrite of some functions
+    Renamed some functions
+    Updated and consolidated manual pages
+    Incremented version to 0.7
+
+Sun May 28 17:21:11 PDT 2000
+    Minor updates
+    Incremented to version 0.6
+
 Mon Feb  7 19:46:49 PST 2000
     Updated package to conform to R >= 0.99 package management
     Removed Makefile and added Makevars

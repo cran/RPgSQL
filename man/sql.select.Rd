@@ -1,8 +1,8 @@
-\name{select}
-\alias{select}
+\name{sql.select}
+\alias{sql.select}
 \title{Format and optionally execute an SQL select query}
 \usage{
-select(columns="*", into, from, where, group.by, having, order.by, limit, distinct=F, exec=T)
+sql.select(columns="*", into, from, where, group.by, having, order.by, limit, distinct=F, exec=T)
 }
 \arguments{
  \item{columns}{A list of column names}
@@ -18,10 +18,10 @@ select(columns="*", into, from, where, group.by, having, order.by, limit, distin
  \item{exec}{If true, execute the query and return the results}
 }
 \description{
-  \code{select} is a wrapper for the SQL SELECT command.
+  \code{sql.select} is a wrapper for the SQL SELECT command.
 }
 \details{
-  Table joins are impossible in \code{select}.  You must use
+  Table joins are impossible in \code{sql.select}.  You must use
   \code{\link{db.execute}} and hand edit the query to do a join.
   \code{select} is meant to save a few key strokes and perhaps avoid a
   few typing errors.
@@ -34,6 +34,6 @@ select(columns="*", into, from, where, group.by, having, order.by, limit, distin
 \seealso{\code{\link{db.execute}}}
 
 \examples{
-select("usename", from="pg_user", where="usename = 'postgres'")
+sql.select("usename", from="pg_user", where="usename = 'postgres'", exec=F)
 }
 \keyword{database}

@@ -1,27 +1,24 @@
 # -*- R -*-
 # $RCSfile: util.R,v $
-# $Date: 2000/01/08 20:38:33 $
-# $Revision: 3.0 $
+# $Date: 2000/07/12 19:31:40 $
+# $Revision: 1.2 $
 # Copyright (C) 1999 Timothy H. Keitt
-convert.table.name <- function(table.name) {
+format.table.name <- function(table.name) {
   if (inherits(table.name, "db.proxy"))
-    name <- to.db.name(db.table.name(table.name))
+    name <- make.db.names(db.table.name(table.name))
   else
-    name <- to.db.name(as.character(table.name))
+    name <- make.db.names(as.character(table.name))
   name <- double.quote(name)
 }
 
 check.table.name <- function(table.name) {
-  name <- convert.table.name(table.name)
+  name <- format.table.name(table.name)
   if (!db.table.exists(name)) stop(paste(name, "is not in database"))
   return(name)
 }
 
-to.db.name <- function(name)
+make.db.names <- function(name)
   return(gsub("\\.", "_", as.character(name)))
-
-to.R.name <- function(name)
-  return(gsub("_", "\\.", as.character(name)))
 
 list.to.csv <- function(...)
   return(paste(collapse=", ", ...))

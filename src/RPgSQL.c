@@ -1,7 +1,7 @@
 /* -*- C -*-
  * $RCSfile: RPgSQL.c,v $
- * $Date: 2000/01/19 19:16:01 $
- * $Revision: 1.2 $
+ * $Date: 2000/05/25 19:15:51 $
+ * $Revision: 1.1.1.1 $
  * Copyright (C) 1999 Timothy H. Keitt
  */
 
