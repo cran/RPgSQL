@@ -639,24 +639,21 @@ then
 	exit 1;
 fi
 
-if test $PG_INCLUDE_DIR
+if ! test $PG_INCLUDE_DIR
 then
-	PKG_CPPFLAGS=-I${PG_INCLUDE_DIR}
-else
-	# Check whether --with-pgsql-includes or --without-pgsql-includes was given.
-if test "${with_pgsql_includes+set}" = set; then
-  withval="$with_pgsql_includes"
-  PKG_CPPFLAGS=-I${withval}
-else
-  NO_PG_INCLUDE_ARGS=1
-fi
-
-fi
-
-if test $NO_PG_INCLUDE_ARGS
-then
-	echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
-echo "configure:660: checking how to run the C preprocessor" >&5
+	for dir in \
+	/usr/include \
+	/usr/include/pgsql \
+	/usr/include/postgresql \
+	/usr/local/include \
+	/usr/local/include/pgsql \
+	/usr/local/include/postgresql \
+	/opt/include \
+	/opt/include/pgsql \
+	/opt/include/postgresql
+	do
+		echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
+echo "configure:657: checking how to run the C preprocessor" >&5
 # On Suns, sometimes $CPP names a directory.
 if test -n "$CPP" && test -d "$CPP"; then
   CPP=
@@ -671,13 +668,13 @@ else
   # On the NeXT, cc -E runs the code through the compiler's parser,
   # not just through cpp.
   cat > conftest.$ac_ext <<EOF
-#line 675 "configure"
+#line 672 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:681: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:678: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -688,13 +685,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -E -traditional-cpp"
   cat > conftest.$ac_ext <<EOF
-#line 692 "configure"
+#line 689 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:698: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:695: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -705,13 +702,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -nologo -E"
   cat > conftest.$ac_ext <<EOF
-#line 709 "configure"
+#line 706 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:715: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:712: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -735,21 +732,21 @@ else
 fi
 echo "$ac_t""$CPP" 1>&6
 
-for ac_hdr in libpq-fe.h
+for ac_hdr in ${dir}/libpq-fe.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:743: checking for $ac_hdr" >&5
+echo "configure:740: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 748 "configure"
+#line 745 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:753: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:750: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -769,16 +766,34 @@ if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
   cat >> confdefs.h <<EOF
 #define $ac_tr_hdr 1
 EOF
- 
+ PG_INCLUDE_DIR=${dir}
 else
   echo "$ac_t""no" 1>&6
-NO_LIBPQ_HEADER=1
 fi
 done
 
+		if test $PG_INCLUDE_DIR
+		then
+			break
+		fi
+	done
 fi
 
-if test $NO_LIBPQ_HEADER
+if test $PG_INCLUDE_DIR
+then
+	PKG_CPPFLAGS=-I${PG_INCLUDE_DIR}
+else
+	# Check whether --with-pgsql-includes or --without-pgsql-includes was given.
+if test "${with_pgsql_includes+set}" = set; then
+  withval="$with_pgsql_includes"
+  PKG_CPPFLAGS=-I${withval}
+else
+  PG_INCLUDE_DIR_NOT_FOUND=1
+fi
+
+fi
+
+if test $PG_INCLUDE_DIR_NOT_FOUND
 then
 	echo
 	echo I could not find your PostgreSQL client headers\!

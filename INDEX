@@ -1,14 +1,14 @@
 db.result.get.value      Fetch a value from returned tuples
-db.write.table           Write an R data frame into a postgres table
+db.write.table           Write an R data frame into a PostgreSQL table
 psql                     Run the PostgreSQL monitor
 Manage connections       Open and manage database connection
-Execute queries          Send commands to the postgres backend
+Execute queries          Send commands to the PostgreSQL back end
 Read from database       Read query results into a data frame
 List database tables     list database tables
 Proxy interface          Bind a proxy object to a PostgreSQL table
 Result attributes        Information about the result buffer
 Type conversions         Conversion between R and PostgreSQL data types
 Utilities                RPgSQL utility functions
-sql.insert               Append data to a postgres table
+sql.insert               Append data to a PostgreSQL table
 sql.select               Format and optionally execute an SQL select
                          query
