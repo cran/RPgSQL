@@ -1,10 +1,10 @@
 # -*- R -*-
 # $RCSfile: proxy.R,v $
-# $Date: 2000/08/16 22:05:13 $
-# $Revision: 1.9 $
-# Copyright (C) 1999 Timothy H. Keitt
+# $Date: 2000/12/12 23:21:56 $
+# $Revision: 1.10 $
+# Copyright (C) 1999, 2000 Timothy H. Keitt
 
-# The vacuum function is postgres specific
+# The vacuum function is postgresql specific
 bind.db.proxy <- function(table.names, vacuum=F) {
   table.names <- make.names(table.names)
   for (i in seq(along=table.names)) {
@@ -20,8 +20,11 @@ bind.db.proxy <- function(table.names, vacuum=F) {
 
 # This may break some other packages, but there is no other option,
 # and row.names really should be generic
-row.names <- function(x) UseMethod("row.names")
-row.names.default <- function(x) attr(x, "row.names")
+#
+# row.names <- function(x) UseMethod("row.names")
+# row.names.default <- function(x) attr(x, "row.names")
+#
+# row.names has been made generic in R 1.2
 row.names.db.proxy <- function(x) {
   if (db.has.row.names(x)) {
     return(row.names(sql.select("rpgsql.row.names", from=x)))
@@ -142,9 +145,12 @@ db.table.name <- function(proxy)
   }
 }
 
-"$<-.db.proxy" <- function(...) stop("Not implemented")
-"[<-.db.proxy" <- function(...) stop("Not implemented")
-"[[<-.db.proxy" <- function(...) stop("Not implemented")
+"row.names<-.db.proxy" <- function(...) stop("Object is read-only")
+"dimnames<-.db.proxy" <- function(...) stop("Object is read-only")
+"names<-.db.proxy" <- function(...) stop("Object is read-only")
+"$<-.db.proxy" <- function(...) stop("Object is read-only")
+"[<-.db.proxy" <- function(...) stop("Object is read-only")
+"[[<-.db.proxy" <- function(...) stop("Object is read-only")
 
 
 

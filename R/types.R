@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: types.R,v $
-# $Date: 2000/07/29 22:03:24 $
-# $Revision: 1.2 $
+# $Date: 2000/12/12 23:21:56 $
+# $Revision: 1.3 $
 # Copyright (C) 1999 Timothy H. Keitt
 
 rpgsql.data.type <- function(x) UseMethod("rpgsql.data.type")
@@ -11,7 +11,7 @@ rpgsql.data.type.default <- function(x) {
   if(is.integer(x)) return("INTEGER")
   if(is.double(x)) return("REAL")
   if(is.logical(x)) return("BOOL")
-  if(is.complex(x)) stop("complex data not supported")
+  if(is.complex(x)) warning("Complex data stored as text")
   return("TEXT")
 }
 

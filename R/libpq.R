@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: libpq.R,v $
-# $Date: 2000/07/25 16:03:45 $
-# $Revision: 1.5 $
+# $Date: 2000/12/12 23:21:56 $
+# $Revision: 1.6 $
 # Copyright (C) 1999 Timothy H. Keitt
 # Licence: GPL
 db.connect <- function(host=NULL, hostaddr=NULL, port=NULL,
@@ -19,8 +19,10 @@ db.connect <- function(host=NULL, hostaddr=NULL, port=NULL,
   .C("rpgsql_connect", conninfo)
   if (db.connection.open()) {
     if (verbose) {
+      host.name <- db.host.name()
+      if (host.name == "") host.name <- "localhost"
       cat("Connected to database", double.quote(db.name()),
-          "on", double.quote(db.host.name()), "\n")
+          "on", double.quote(host.name), "\n")
     }
   } else {
     stop("Connection failed\n")
