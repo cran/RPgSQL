@@ -1,3 +1,7 @@
+Thu Dec  7 11:34:38 EST 2000
+    Fixed small bug in configure script (thanks to Rainer Hurling)
+    Incremented version to 0.8-3
+
 Sat Oct 28 13:34:43 EDT 2000
     Made configure script a bit more intelligent
     Incremented version to 0.8-2

@@ -570,7 +570,7 @@ fi
 
 if test $PG_LIB_DIR
 then
-	PKG_LIBS="${PKG_LIBS} -L${PG_LIB_DIR} -lpq",
+	PKG_LIBS="${PKG_LIBS} -L${PG_LIB_DIR} -lpq"
 else
 	# Check whether --with-pgsql-libraries or --without-pgsql-libraries was given.
 if test "${with_pgsql_libraries+set}" = set; then

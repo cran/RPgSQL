@@ -8,7 +8,7 @@ AC_CHECK_LIB(crypt, crypt, PKG_LIBS=-lcrypt,
 dnl See if user specified library directory
 if test $PG_LIB_DIR
 then
-	PKG_LIBS="${PKG_LIBS} -L${PG_LIB_DIR} -lpq",
+	PKG_LIBS="${PKG_LIBS} -L${PG_LIB_DIR} -lpq"
 else
 	AC_ARG_WITH(pgsql-libraries,
 		    --with-pgsql-libraries    sets path to libpq library,
