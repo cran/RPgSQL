@@ -1,3 +1,4 @@
+bind.proxy               Bind a proxy object to a PostgreSQL table
 check.table.name         verify and format table name
 convert.table.name       table name conversion utility
 db.clear.result          Free allocated resources
@@ -9,6 +10,8 @@ db.connection.status     Get connection status
 db.disconnect            End connection to postgres backend
 db.error.message         Get current error message from libpq
 db.execute               Send commands to the postgres backend
+db.fnumber               Return the number of a named column
+db.ftype                 Returns the data type code for a given column
 db.get.value             Fetch values from returned tuples
 db.ls                    List database tables
 db.name                  Return name of currently connected database
@@ -23,6 +26,9 @@ db.write.table           Write an R data frame into a postgres table
 insert                   Append data to a postgres table
 list.to.csv              Convert a list of values to a string containing
                          comma separated values
+rpgsql.cast.values       Convert PgSQL output to R objects or types
+rpgsql.data.type         Map R classes to PostgreSQL data types
+rpgsql.format.values     Stringify R data into PgSQL compatible form
 select                   Format and optionally execute an SQL select
                          query
 single.quote             convert arguments to a single quoted string

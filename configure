@@ -557,20 +557,28 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-    ac_tr_lib=HAVE_LIB`echo crypt | sed -e 's/[^a-zA-Z0-9_]/_/g' \
-    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_lib 1
-EOF
-
-  LIBS="-lcrypt $LIBS"
-
+  FOUND_LIBCRYPT=1
 else
   echo "$ac_t""no" 1>&6
 fi
 
-echo $ac_n "checking for PQconnectdb in -lpq""... $ac_c" 1>&6
-echo "configure:574: checking for PQconnectdb in -lpq" >&5
+if test $FOUND_LIBCRYPT; then
+   PKG_LIBS="-lcrypt"
+else
+   echo
+   echo Either libcrypt is missing or does not contain
+   echo the function crypt.  RPgSQL will not compile
+   echo without libcrypt.
+   echo
+   exit 1
+fi
+
+if test $PG_LIB_DIR; then
+   PKG_LIBS="$PKG_LIBS -lpq"
+   PKG_LDFLAGS="-L${PG_LIB_DIR}"
+else
+   echo $ac_n "checking for PQconnectdb in -lpq""... $ac_c" 1>&6
+echo "configure:582: checking for PQconnectdb in -lpq" >&5
 ac_lib_var=`echo pq'_'PQconnectdb | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -578,7 +586,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lpq  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 582 "configure"
+#line 590 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -589,7 +597,7 @@ int main() {
 PQconnectdb()
 ; return 0; }
 EOF
-if { (eval echo configure:593: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:601: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -604,31 +612,29 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-    ac_tr_lib=HAVE_LIB`echo pq | sed -e 's/[^a-zA-Z0-9_]/_/g' \
-    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_lib 1
-EOF
-
-  LIBS="-lpq $LIBS"
-
+  FOUND_LIBPQ=1
 else
   echo "$ac_t""no" 1>&6
 fi
 
+   if test $FOUND_LIBPQ; then
+      PKG_LIBS="$PKG_LIBS -lpq"
+   else
+      echo
+      echo I could not find your libpq.  Either it is missing
+      echo or is installed in a non-standard location.  If libpq
+      echo is installed, set PG_LIB_DIR to the directory containing
+      echo libpq and reinstall the RPgSQL package.  PG_LIB_DIR
+      echo only needs to be set during package installation,
+      echo not while running RPgSQL.
+      echo
+      exit 1
+   fi
+fi
 
-for dir in \
-    /usr/include \
-    /usr/include/pgsql \
-    /usr/include/postgresql \
-    /usr/local/include \
-    /usr/local/include/pgsql \
-    /usr/local/include/postgresql \
-    /opt/include \
-    /opt/include/pgsql \
-    /opt/include/postgresql; do
-    echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
-echo "configure:632: checking how to run the C preprocessor" >&5
+if test $PG_INCLUDE_DIR; then
+   echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
+echo "configure:638: checking how to run the C preprocessor" >&5
 # On Suns, sometimes $CPP names a directory.
 if test -n "$CPP" && test -d "$CPP"; then
   CPP=
@@ -643,13 +649,13 @@ else
   # On the NeXT, cc -E runs the code through the compiler's parser,
   # not just through cpp.
   cat > conftest.$ac_ext <<EOF
-#line 647 "configure"
+#line 653 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:653: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:659: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -660,13 +666,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -E -traditional-cpp"
   cat > conftest.$ac_ext <<EOF
-#line 664 "configure"
+#line 670 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:670: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:676: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -677,13 +683,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -nologo -E"
   cat > conftest.$ac_ext <<EOF
-#line 681 "configure"
+#line 687 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:687: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:693: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -707,19 +713,19 @@ else
 fi
 echo "$ac_t""$CPP" 1>&6
 
-ac_safe=`echo "${dir}/libpq-fe.h" | sed 'y%./+-%__p_%'`
-echo $ac_n "checking for ${dir}/libpq-fe.h""... $ac_c" 1>&6
-echo "configure:713: checking for ${dir}/libpq-fe.h" >&5
+ac_safe=`echo "${PG_INCLUDE_DIR}/libpq-fe.h" | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for ${PG_INCLUDE_DIR}/libpq-fe.h""... $ac_c" 1>&6
+echo "configure:719: checking for ${PG_INCLUDE_DIR}/libpq-fe.h" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 718 "configure"
+#line 724 "configure"
 #include "confdefs.h"
-#include <${dir}/libpq-fe.h>
+#include <${PG_INCLUDE_DIR}/libpq-fe.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:723: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:729: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -735,13 +741,64 @@ rm -f conftest*
 fi
 if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  PKG_CPPFLAGS="-I${dir}"
+  FOUND_LIBPQ_FE_H=1
 else
   echo "$ac_t""no" 1>&6
 fi
 
-    if test $PKG_CPPFLAGS; then break; fi
-done
+else
+   ac_safe=`echo "libpq-fe.h" | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for libpq-fe.h""... $ac_c" 1>&6
+echo "configure:753: checking for libpq-fe.h" >&5
+if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 758 "configure"
+#include "confdefs.h"
+#include <libpq-fe.h>
+EOF
+ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+{ (eval echo configure:763: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+if test -z "$ac_err"; then
+  rm -rf conftest*
+  eval "ac_cv_header_$ac_safe=yes"
+else
+  echo "$ac_err" >&5
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_header_$ac_safe=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  FOUND_LIBPQ_FE_H=1
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+fi
+
+if test $FOUND_LIBPQ_FE_H; then
+   PKG_CPPFLAGS="-I${PG_INCLUDE_DIR}"
+else
+   echo
+   echo I could not find the include file libpq-fe.h.
+   echo Either it is missing or installed in a non-standard
+   echo location.  If libpq-fe.h is installed, set PG_INCLUDE_DIR
+   echo to the directory containing libpq-fe.h.  PG_INCLUDE_DIR
+   echo only needs to be set during package installation, not
+   echo while running RPgSQL.
+   echo
+   exit 1
+fi
+
+
+
+
 
 
 trap '' 1 2 15
@@ -856,7 +913,7 @@ done
 
 ac_given_srcdir=$srcdir
 
-trap 'rm -fr `echo "src/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "src/Makevars" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -890,6 +947,10 @@ s%@infodir@%$infodir%g
 s%@mandir@%$mandir%g
 s%@CPP@%$CPP%g
 s%@PKG_CPPFLAGS@%$PKG_CPPFLAGS%g
+s%@PKG_LIBS@%$PKG_LIBS%g
+s%@PKG_LDFLAGS@%$PKG_LDFLAGS%g
+s%@PKG_CFLAGS@%$PKG_CFLAGS%g
+s%@PKG_FFLAGS@%$PKG_FFLAGS%g
 
 CEOF
 EOF
@@ -931,7 +992,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"src/Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"src/Makevars"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

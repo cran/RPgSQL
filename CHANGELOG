@@ -1,3 +1,7 @@
+Mon Feb  7 19:46:49 PST 2000
+    Updated package to conform to R >= 0.99 package management
+    Removed Makefile and added Makevars
+
 Wed Jan 19 11:23:30 PST 2000
     (Hopefully ;-) Fixed autoconf and make files
     Incremented to version 0.4
