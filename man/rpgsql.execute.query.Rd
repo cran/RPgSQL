@@ -1,5 +1,6 @@
 \name{Execute queries}
 \alias{db.execute}
+\alias{db.result.status}
 \alias{db.clear.result}
 \alias{db.toggle.echo}
 \title{Send commands to the PostgreSQL back end}

@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: io.R,v $
-# $Date: 2000/07/29 22:03:24 $
-# $Revision: 1.4 $
+# $Date: 2001/06/20 19:46:09 $
+# $Revision: 1.6 $
 # Copyright (C) 1999 Timothy H. Keitt
 # Licence: GPL
 db.ls <- function(pattern=NULL, all=F) {

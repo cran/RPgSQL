@@ -1,10 +1,20 @@
 \name{Manage connections}
 \alias{db.connect}
 \alias{db.disconnect}
+\alias{db.connection.status}
+\alias{db.connection.open}
+\alias{db.error.message}
+\alias{db.name}
+\alias{db.host.name}
+\alias{db.connection.options}
+\alias{db.user.name}
+\alias{db.password}
+\alias{db.connection.port}
+\alias{db.debug.tty}
 \title{Open and manage database connection}
 \usage{
-db.connect(host=NULL, port=NULL, dbname=NULL, user=NULL, password=NULL,
-authtype=NULL, options=NULL, tty=NULL, verbose=T)
+db.connect(host=NULL, hostaddr=NULL, port=NULL, dbname=NULL, user=NULL,
+ password=NULL, authtype=NULL, options=NULL, tty=NULL, verbose=T)
 db.disconnect()
 db.connection.status()
 db.connection.open()

@@ -2,7 +2,8 @@
 \alias{sql.select}
 \title{Format and optionally execute an SQL select query}
 \usage{
-sql.select(columns="*", into, from, where, group.by, having, order.by, limit, distinct=F, exec=T)
+sql.select(columns="*", into, from, where, group.by, having, order.by,
+limit, offset, distinct=F, exec=T)
 }
 \arguments{
  \item{columns}{A list of column names}

@@ -1,8 +1,8 @@
 # -*- R -*-
 # $RCSfile: sql.R,v $
-# $Date: 2000/07/14 20:54:46 $
-# $Revision: 1.3 $
-# Copyright (C) 1999 Timothy H. Keitt
+# $Date: 2001/06/20 19:46:09 $
+# $Revision: 1.7 $
+# Copyright (C) 1999, 2000 Timothy H. Keitt, Adam M. Kornick
 
 # You can't use this function to do joins
 sql.select <- function(columns="*", into, from, where, group.by, having,
@@ -62,6 +62,20 @@ sql.insert <- function(into, column.names, values, query) {
     }
     db.execute(boiler, query)
   }
+  on.exit(db.execute("COMMIT TRANSACTION"))
+  return(invisible())
+}
+
+sql.update <- function(table, column, value, condition) {
+  db.execute("BEGIN TRANSACTION")
+  on.exit(db.execute("ROLLBACK TRANSACTION"))
+  column <- make.db.names(column)
+  query <- paste("UPDATE", format.table.name(table),
+                 "SET", double.quote(column),
+                 "=", single.quote(value))
+  if(!missing(condition))
+    query <- paste(query, "WHERE", condition)
+  db.execute(query)
   on.exit(db.execute("COMMIT TRANSACTION"))
   return(invisible())
 }

@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: util.R,v $
-# $Date: 2000/07/25 16:03:45 $
-# $Revision: 1.3 $
+# $Date: 2001/06/20 19:46:09 $
+# $Revision: 1.5 $
 # Copyright (C) 1999 Timothy H. Keitt
 format.table.name <- function(table.name) {
   if (inherits(table.name, "db.proxy"))

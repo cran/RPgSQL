@@ -1,10 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/RPgSQL.c)
 
-dnl Checks for libraries.
-AC_CHECK_LIB(crypt, crypt, PKG_LIBS=-lcrypt,
-             echo No crypt function found; exit 1)
-
 dnl See if user specified library directory
 if test $PG_LIB_DIR
 then

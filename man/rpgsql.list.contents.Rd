@@ -1,6 +1,7 @@
 \name{List database tables}
 \alias{db.ls}
 \alias{db.rm}
+\alias{db.table.exists}
 \title{list database tables}
 \usage{
 db.ls(pattern, all=F)

@@ -1,8 +1,28 @@
 \name{Proxy interface}
 \alias{bind.db.proxy}
+\alias{$.db.proxy}
+\alias{$<-.db.proxy}
+\alias{$<-.db.proxy.writable}
+\alias{[.db.proxy}
+\alias{[<-.db.proxy}
+\alias{[<-.db.proxy.writable}
+\alias{[[.db.proxy}
+\alias{[[<-.db.proxy}
+\alias{[[<-.db.proxy.writable}
+\alias{as.data.frame.db.proxy}
+\alias{as.list.db.proxy}
+\alias{as.matrix.db.proxy}
+\alias{dim.db.proxy}
+\alias{dimnames.db.proxy}
+\alias{names.db.proxy}
+\alias{print.db.proxy}
+\alias{row.names.db.proxy}
+\alias{summary.db.proxy}
+\alias{db.has.row.names}
+\alias{db.table.name}
 \title{Bind a proxy object to a PostgreSQL table}
 \usage{
-bind.db.proxy(table.name, vacuum=F)
+bind.db.proxy(table.name, vacuum=F, writable=F)
 row.names(proxy)
 dimnames(proxy)
 as.list(proxy)

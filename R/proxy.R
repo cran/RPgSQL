@@ -1,30 +1,24 @@
 # -*- R -*-
 # $RCSfile: proxy.R,v $
-# $Date: 2000/12/12 23:21:56 $
-# $Revision: 1.10 $
-# Copyright (C) 1999, 2000 Timothy H. Keitt
+# $Date: 2001/06/20 19:46:09 $
+# $Revision: 1.14 $
+# Copyright (C) 1999,2000  Timothy H. Keitt, Adam M Kornick
 
-# The vacuum function is postgresql specific
-bind.db.proxy <- function(table.names, vacuum=F) {
+# The vacuum function is postgres specific
+bind.db.proxy <- function(table.names, vacuum=F, writable=F) {
   table.names <- make.names(table.names)
   for (i in seq(along=table.names)) {
     proxy <- list(table.name=table.names[i], host=db.host.name(),
                   port=db.connection.port(), dbname=db.name(),
                   user=db.user.name(), password=db.password())
     class(proxy) <- c("db.proxy", "data.frame")
+    if (writable) class(proxy) <- c("db.proxy.writable", class(proxy))
     if (vacuum) db.execute("VACUUM ANALYZE", table.names[i])
     assign(table.names[i], proxy, envir=sys.frame(sys.parent()))
   }
   return(invisible())
 }
 
-# This may break some other packages, but there is no other option,
-# and row.names really should be generic
-#
-# row.names <- function(x) UseMethod("row.names")
-# row.names.default <- function(x) attr(x, "row.names")
-#
-# row.names has been made generic in R 1.2
 row.names.db.proxy <- function(x) {
   if (db.has.row.names(x)) {
     return(row.names(sql.select("rpgsql.row.names", from=x)))
@@ -145,24 +139,14 @@ db.table.name <- function(proxy)
   }
 }
 
-"row.names<-.db.proxy" <- function(...) stop("Object is read-only")
-"dimnames<-.db.proxy" <- function(...) stop("Object is read-only")
-"names<-.db.proxy" <- function(...) stop("Object is read-only")
 "$<-.db.proxy" <- function(...) stop("Object is read-only")
 "[<-.db.proxy" <- function(...) stop("Object is read-only")
 "[[<-.db.proxy" <- function(...) stop("Object is read-only")
 
+# Methods for writable proxies defined in this block
 
-
-
-
-
-
-
-
-
-
-
-
+"$<-.db.proxy.writable" <- function(...) stop("Not implemented")
+"[<-.db.proxy.writable" <- function(...) stop("Not implemented")
+"[[<-.db.proxy.writable" <- function(...) stop("Not implemented")
 
 

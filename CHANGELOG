@@ -1,3 +1,10 @@
+Wed Jun 20 15:18:04 EDT 2001
+    Incremented to version 1.0-0
+
+Wed Jan 17 19:30:45 EST 2001
+    Merged additions from Adam Kornick
+    Incremented version to 0.9-2
+
 Tue Dec 12 18:19:34 EST 2000
     Minor updates
     Made package depend on R version 1.2 or above

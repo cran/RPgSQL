@@ -12,3 +12,4 @@ Utilities                RPgSQL utility functions
 sql.insert               Append data to a PostgreSQL table
 sql.select               Format and optionally execute an SQL select
                          query
+sql.update               Update data in a column of a PostgreSQL table
