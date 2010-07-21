@@ -18,13 +18,36 @@ pgSQL <- function(driverClass='org.postgresql.Driver', classPath,
 			file.path(Sys.getenv("PROGRAMFILES"), "PostgreSQL\\pgJDBC")
 			} else "/usr/local/pgsql/share/java")
 
-	 find.file <- function(datapath, file) { 
-		if (file == basename(file)) {
-			datapath <- unlist(strsplit(datapath, ";"))
-			unname(unlist(sapply(file.path(datapath, file), Sys.glob)))
-		} else {
-			if (file.exists(file)) file
-		}
+#	 find.file <- function(datapath, file) { 
+#		out <- if (file == basename(file)) {
+#			datapath <- unlist(strsplit(datapath, .Platform$path.sep))
+#			unname(unlist(sapply(file.path(datapath, file), Sys.glob)))
+#		} else {
+#			if (file.exists(file)) file
+#		}
+#		head(out, 1)
+#	 }
+
+
+	 # x is path/file or path.  glob is matched to it and the last match
+	 # is returned.
+	 match.glob <- function(x, glob) {
+		result <- if (file.exists(x)) {
+			if (file.info(x)$isdir) Sys.glob(file.path(x, glob))
+			else {
+				b <- basename(Sys.glob(file.path(dirname(x), glob)))
+				if (basename(x) %in% b) x
+		    }
+	    }
+		tail(result, 1)
+	 }
+
+	 # find first occurrence of glob on datapath
+	 find.file <- function(datapath, glob) {
+		datapath <- unlist(strsplit(datapath, .Platform$path.sep))
+		# strip trailing forward or backward slashes
+		datapath <- gsub("[\\/]$", "", datapath)
+		head(unlist(lapply(datapath, match.glob, glob = glob)), 1)
 	 }
 
      classPath <- find.file(jar.search.path, "postgresql*.jdbc4.jar")
@@ -104,7 +127,7 @@ setMethod("dbDataType", signature(dbObj="pgSQLConnection", obj = "ANY"),
             if (is.integer(obj)) "INTEGER"
             else if (is.numeric(obj)) "DOUBLE PRECISION"
             else if (inherits(obj, "Date")) "DATE"
-			else if (inherits(obj, "POSIXct")) "TIMESTAMP"
+			else if (inherits(obj, "POSIXct")) "TIMESTAMP WITH TIME ZONE"
             else "VARCHAR(255)"
           }, valueClass = "character")
 

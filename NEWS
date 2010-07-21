@@ -1,0 +1,15 @@
+Version 0.1-3.1
+
+   o improved path handling code (thanks to Robert McGehee)
+
+Version 0.1-2
+
+   o in pgSQL handle colon separated classpath on non-windows systems
+
+Version 0.1-1
+
+   o POSIXct variables stored as TIMESTAMP WITH TIME ZONE (vs. TIMESTAMP)
+
+Version 0.1-0
+
+   o initial release

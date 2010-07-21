@@ -30,11 +30,13 @@ along that path or paths).
   - /usr/local/pgsql/share/java (non-Windows only)
   - %PROGRAMFILES%\PostgreSQL\pgJDBC (Windows only)
 
+Of course if its already in one of those locations then there is nothing to do.
+
 For example, if the JDBC driver jar file for PostgreSQL is in your home
 directory, you could put this into your ~/.Rprofile file (or
 %userprofile%\Documents\.Rprofile file on Windows): 
 
-	options(RpgSQL.JAR = "~\postgresql-8.4-701.jdbc4.jar")
+	options(RpgSQL.JAR = "~\\postgresql-8.4-701.jdbc4.jar")
 
 Also the default user, password and dbname are "postgresql", "" and "test". To
 specify anything add to the same file these lines:
