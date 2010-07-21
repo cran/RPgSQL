@@ -17,8 +17,7 @@ listed here there are methods inherited from \code{JDBCDriver}.
 \dontrun{
 # these are the defaults for user, password and dbname so they did not
 # have to be specified here
-con <- dbConnect(pgSQL(), user = "postgres", password = "", dbname = "test",
-	host = "localhost", port = 5432)
+con <- dbConnect(pgSQL(), user = "postgres", password = "", dbname = "test")
 dbDisconnect(con)
 }
 }

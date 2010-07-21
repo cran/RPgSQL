@@ -4,7 +4,6 @@
 \alias{dbWriteTable,pgSQLConnection-method}
 \alias{dbDataType,pgSQLConnection-method}
 \alias{dbSendQuery,pgSQLConnection,character-method}
-\alias{dbGetQuery,pgSQLConnection,character-method}
 \title{Methods for the class `pgSQLConnect' in Package `pgSQL'}
 \description{
   Methods for the class `pgSQLConnection' in Package `pgSQL'.  

@@ -1,10 +1,6 @@
 \name{pgSQLResult-class}
 \docType{class}
 \alias{pgSQLResult-class}
-\alias{dbHasCompleted-methods}
-\alias{dbHasCompleted,JDBCResult-method}
-\alias{dbClearResult-methods}
-\alias{dbClearResult,JDBCResult-method}
 
 \title{Class "pgSQLResult"}
 \description{Representation of a DBI result set returned from a pgSQL connection.}

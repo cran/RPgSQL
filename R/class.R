@@ -3,36 +3,20 @@ setClass("pgSQLDriver", contains = "JDBCDriver")
 setClass("pgSQLConnection", contains = "JDBCConnection")
 setClass("pgSQLResult", contains = "JDBCResult")
 
-setMethod("dbGetQuery", signature(conn="pgSQLConnection",
-statement="character"),  def=function(conn, statement, stringsAsFactors =
-FALSE, ...) {
- r <- dbSendQuery(conn, statement, ...)
- fetch(r, -1, stringsAsFactors)
-})
 
 pgSQL <- function(driverClass='org.postgresql.Driver', classPath,
 	identifier.quote="\"") {
+  if (missing(classPath)) {
 
-  if (missing(classPath)) classPath <- NULL
-
-  ## if option RpgSQL.JAR or envir variable RpgSQL_JAR is a file set classPath
-
-  RpgSQL_JAR <- getOption("RpgSQL.JAR")
-  if (is.null(RpgSQL_JAR)) RpgSQL_JAR <- unname(Sys.getenv("RpgSQL_JAR"))
-  if (identical(RpgSQL_JAR, "")) RpgSQL_JAR <- NULL
-  if (!is.null(RpgSQL_JAR) && file.exists(RpgSQL_JAR) && !file.info(RpgSQL_JAR)$isdir) classPath <- RpgSQL_JAR
-
-  if (is.null(classPath)) {
-
-	## this is the path that the PostgreSQL JDBC jar file is searched along
-
-	jar.search.path <- c(RpgSQL_JAR,
+	# this is the path that the PostgreSQL JDBC jar file is searched along
+	jar.search.path <- c(getOption("RpgSQL_JAR"), 
+		Sys.getenv("RpgSQL_JAR"), 
 		".",
 		Sys.getenv("CLASSPATH"), 
 		Sys.getenv("PATH"), 
 		if (.Platform$OS == "windows") {
 			file.path(Sys.getenv("PROGRAMFILES"), "PostgreSQL\\pgJDBC")
-			} else c("/usr/local/pgsql/share/java", "/opt/local/share/java"))
+			} else "/usr/local/pgsql/share/java")
 
 #	 find.file <- function(datapath, file) { 
 #		out <- if (file == basename(file)) {
@@ -68,9 +52,6 @@ pgSQL <- function(driverClass='org.postgresql.Driver', classPath,
 
      classPath <- find.file(jar.search.path, "postgresql*.jdbc4.jar")
 
-	 if (length(classPath) == 0) classPath <- 
-		find.file(jar.search.path, "postgresql*.jar")
-
      if (length(classPath) == 0) {
         stop("Could not find Postgres JDBC driver on", jar.search.path)
       } else classPath <- normalizePath(classPath[1])
@@ -86,19 +67,13 @@ pgSQL <- function(driverClass='org.postgresql.Driver', classPath,
 }
 
 setMethod("dbConnect", "pgSQLDriver", def=function(drv, 
-  url = getOption("RpgSQL.url"),
+  url = sprintf("jdbc:postgresql:%s:", dbname),
   user = getOption("RpgSQL.user"),
   password = getOption("RpgSQL.password"),
-  dbname = getOption("RpgSQL.dbname"), 
-  host = getOption("RpgSQL.host"),
-  port = getOption("RpgSQL.port"), ...) {
+  dbname = getOption("RpgSQL.dbname"), ...) {
   if (is.null(user)) user <- "postgres"
   if (is.null(password)) password <- ""
   if (is.null(dbname)) dbname <- "test"
-  if (is.null(host)) host <- "localhost"
-  if (is.null(port)) port <- 5432
-  if (is.null(url)) url <- 
-	sprintf("jdbc:postgresql://%s:%s/%s", host, port, dbname)
   jc <- .jcall("java/sql/DriverManager","Ljava/sql/Connection;","getConnection", as.character(url)[1], as.character(user)[1], as.character(password)[1], check=FALSE)
   if (is.jnull(jc) || !is.jnull(drv@jdrv)) {
     # ok one reason for this to fail is its interaction with rJava's
@@ -156,13 +131,11 @@ setMethod("dbDataType", signature(dbObj="pgSQLConnection", obj = "ANY"),
             else "VARCHAR(255)"
           }, valueClass = "character")
 
-setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, n, stringsAsFactors = FALSE, ...) {
+setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, n, ...) {
   cols <- .jcall(res@md, "I", "getColumnCount")
   if (cols < 1) return(NULL)
   l <- list()
   for (i in 1:cols) {
-	# java.sql.Types defines the constant values for sql types:
-    # http://download.oracle.com/javase/1,5.0/docs/api/constant-values.html
     ct <- .jcall(res@md, "I", "getColumnType", i)
     l[[i]] <- if (ct == -5 | ct ==-6 | (ct >= 2 & ct <= 8)) { 
            numeric()
@@ -179,13 +152,9 @@ setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, 
     j <- j + 1
     for (i in 1:cols) {
       l[[i]][j] <- if (is.numeric(l[[i]])) { 
-          a <- .jcall(res@jr, "S", "getString", i)
-          l[[i]][j] <- if (is.null(a)) NA else 
-			  .jcall(res@jr, "D", "getDouble", i)
+          l[[i]][j] <- .jcall(res@jr, "D", "getDouble", i)
       } else if (inherits(l[[i]], "Date")) {
-        tentativeDate <- .jcall(res@jr, "S", "getString", i)
-	    if (length(tentativeDate) == 0 || tentativeDate == "0001-01-01 BC") tentativeDate <- NA
-        l[[i]][j] <- as.Date(tentativeDate)
+        l[[i]][j] <- as.Date(.jcall(res@jr, "S", "getString", i))
       } else {
         a <- .jcall(res@jr, "S", "getString", i)
         l[[i]][j] <- if (is.null(a)) NA else a
@@ -194,9 +163,9 @@ setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, 
     if (n > 0 && j >= n) break
   }
   if (j)
-    as.data.frame(l, row.names=1:j, stringsAsFactors = stringsAsFactors)
+    as.data.frame(l, row.names=1:j)
   else
-    as.data.frame(l, stringsAsFactors = stringsAsFactors)
+    as.data.frame(l)
 })
 
 setMethod("dbSendQuery", signature(conn="pgSQLConnection", statement="character"),  def=function(conn, statement, ..., list=NULL) {
@@ -210,35 +179,4 @@ setMethod("dbSendQuery", signature(conn="pgSQLConnection", statement="character"
   .verify.JDBC.result(md, "Unable to retrieve JDBC result set meta data for ",statement, " in dbSendQuery")
   new("pgSQLResult", jr=r, md=md)
 })
-
-### this should really be in RJDBC
-setMethod("dbClearResult", "JDBCResult",
-          def = function(res, ...) { .jcall(res@jr, "V", "close"); TRUE},
-          valueClass = "logical")
-
-### this should really be in RJDBC
-setMethod("dbHasCompleted", "JDBCResult",
-          def = function(res, ...) { .jcall(res@jr, "Z", "isLast") ||
-			  .jcall(res@jr, "Z", "isAfterLast") },
-          valueClass = "logical")
-
-.fillStatementParameters <- function(s, l) {
-  for (i in 1:length(l)) {
-    v <- l[[i]]
-    if (is.na(v)) { # map NAs to NULLs (courtesy of Axel Klenk)
-      sqlType <- if (is.integer(v)) 4 else if (is.numeric(v)) 8 else if (inherits(v, "Date")) 91 else 12
-      .jcall(s, "V", "setNull", i, as.integer(sqlType))
-    } else if (is.integer(v))
-      .jcall(s, "V", "setInt", i, v[1])
-    else if (is.numeric(v))
-      .jcall(s, "V", "setDouble", i, as.double(v)[1])
-	else if (inherits(v, "Date")) {
-	  # da <- .jnew("java/text/SimpleDateFormat", "yyyy-MM-dd")$parse(format(v))
-	  # java.sql.Date jsqlD = java.sql.Date.valueOf( "2010-01-31" );
-	  da <- .jnew("java/sql/Date", .jlong(0))$valueOf(format(v))
-      .jcall(s, "V", "setDate", i, da)
-    } else
-      .jcall(s, "V", "setString", i, as.character(v)[1])
-  }
-}
 
