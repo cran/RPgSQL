@@ -16,11 +16,9 @@ are easy to install.
 
 After installing RpgSQL you must ensure that it can find the JDBC .jar file.
 This is the only file it needs to know the whereabouts of.  It will search
-the following locations for postgres*.jdbc4.jar so ensure that its in one of 
-the following places (in the case of RpgSQL.JAR or RpgQL_JAR specify the
-exact path and filename of the jar whereas in the others just specify the
-path and it will look for a jar whose name is of the form: postgres*.jdbc4.jar
-along that path or paths).
+the following locations for postgres*.jdbc4.jar and if not found for
+postgres*.jar so ensure that its in one of 
+the following places:
 
   - the path/filename defined by the global R option RpgSQL.JAR
   - the path/filename defined by the environment variable RpgSQL_JAR
@@ -28,7 +26,12 @@ along that path or paths).
   - the paths defined by the CLASSPATH system environment variable if it exists
   - the system path 
   - /usr/local/pgsql/share/java (non-Windows only)
+  - /opt/local/share/java (non-Windows only)
   - %PROGRAMFILES%\PostgreSQL\pgJDBC (Windows only)
+
+Alternately the R option RpgSQL.JAR or system environment variable RpgSQL_JAR
+may specify the entire path and filename in which case it will use that rather
+than do a search.
 
 Of course if its already in one of those locations then there is nothing to do.
 
@@ -36,7 +39,7 @@ For example, if the JDBC driver jar file for PostgreSQL is in your home
 directory, you could put this into your ~/.Rprofile file (or
 %userprofile%\Documents\.Rprofile file on Windows): 
 
-	options(RpgSQL.JAR = "~\\postgresql-8.4-701.jdbc4.jar")
+	options(RpgSQL.JAR = "~/postgresql-8.4-701.jdbc4.jar")
 
 Also the default user, password and dbname are "postgresql", "" and "test". To
 specify anything add to the same file these lines:

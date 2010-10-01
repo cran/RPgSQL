@@ -1,3 +1,12 @@
+Version 0.1-3.2
+
+   o more improvements to path handling code (thanks to Chris Chou)
+
+   o the RpgSQL.JAR option has a dot rather than an underscore so that all
+     options (RpgSQL.JAR, RpgSQL.dbname, RpgSQL.password) have a dot;
+     however, the environment variable RpgSQL_JAR continues to have an 
+	 underscore.
+
 Version 0.1-3.1
 
    o improved path handling code (thanks to Robert McGehee)

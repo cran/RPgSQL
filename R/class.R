@@ -6,17 +6,27 @@ setClass("pgSQLResult", contains = "JDBCResult")
 
 pgSQL <- function(driverClass='org.postgresql.Driver', classPath,
 	identifier.quote="\"") {
-  if (missing(classPath)) {
 
-	# this is the path that the PostgreSQL JDBC jar file is searched along
-	jar.search.path <- c(getOption("RpgSQL_JAR"), 
-		Sys.getenv("RpgSQL_JAR"), 
+  if (missing(classPath)) classPath <- NULL
+
+  ## if option RpgSQL.JAR or envir variable RpgSQL_JAR is a file set classPath
+
+  RpgSQL_JAR <- getOption("RpgSQL.JAR")
+  if (is.null(RpgSQL_JAR)) RpgSQL_JAR <- unname(Sys.getenv("RpgSQL_JAR"))
+  if (identical(RpgSQL_JAR, "")) RpgSQL_JAR <- NULL
+  if (!is.null(RpgSQL_JAR) && file.exists(RpgSQL_JAR) && !file.info(RpgSQL_JAR)$isdir) classPath <- RpgSQL_JAR
+
+  if (is.null(classPath)) {
+
+	## this is the path that the PostgreSQL JDBC jar file is searched along
+
+	jar.search.path <- c(RpgSQL_JAR,
 		".",
 		Sys.getenv("CLASSPATH"), 
 		Sys.getenv("PATH"), 
 		if (.Platform$OS == "windows") {
 			file.path(Sys.getenv("PROGRAMFILES"), "PostgreSQL\\pgJDBC")
-			} else "/usr/local/pgsql/share/java")
+			} else c("/usr/local/pgsql/share/java", "/opt/local/share/java"))
 
 #	 find.file <- function(datapath, file) { 
 #		out <- if (file == basename(file)) {
@@ -51,6 +61,9 @@ pgSQL <- function(driverClass='org.postgresql.Driver', classPath,
 	 }
 
      classPath <- find.file(jar.search.path, "postgresql*.jdbc4.jar")
+
+	 if (length(classPath) == 0) classPath <- 
+		find.file(jar.search.path, "postgresql*.jar")
 
      if (length(classPath) == 0) {
         stop("Could not find Postgres JDBC driver on", jar.search.path)

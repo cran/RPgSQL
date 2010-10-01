@@ -14,8 +14,21 @@
     load. If empty, it is assumed that corresponding drivers were
     loaded by other means.}
   \item{classPath}{class path that needs to be appended in order to
-    load the desired driver. Usually it is the path to the JAR file
-    containing the driver.}
+    load the desired driver. Usually it is the path and file to the JAR file
+    containing the driver. If omitted and \code{getOption("RpgSQL_JAR")}
+    is a path and file it will use that; otherwise, if 
+    \code{Sys.getenv("RpgSQL_JAR")}
+    is a path and file it will use that.  If neither of those are specified
+    or if they are paths rather than path and file then it
+    will try to find the appropriate file looking
+	at directories listed in the R option \code{"RpgSQL.JAR"}, 
+    the environment variable
+	\code{RpgSQL_JAR}, the environment variable \code{CLASSPATH} and
+    on Windows it will also look in 
+	\code{file.path(getenv("PROGRAMFILES"), "PostgreSLQ\\pgJDBC")}
+	while on other systems it will also look in
+	\code{/usr/local/pgsql/share/java}.
+}
   \item{identifier.quote}{character to use for quoting identifiers in
     automatically generated SQL statements or \code{NA} for no
     quoted identifiers.}    
