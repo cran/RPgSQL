@@ -193,3 +193,15 @@ setMethod("dbSendQuery", signature(conn="pgSQLConnection", statement="character"
   new("pgSQLResult", jr=r, md=md)
 })
 
+### this should really be in RJDBC
+setMethod("dbClearResult", "JDBCResult",
+          def = function(res, ...) { .jcall(res@jr, "V", "close"); TRUE},
+          valueClass = "logical")
+
+### this should really be in RJDBC
+setMethod("dbHasCompleted", "JDBCResult",
+          def = function(res, ...) { .jcall(res@jr, "Z", "isLast") ||
+			  .jcall(res@jr, "Z", "isAfterLast") },
+          valueClass = "logical")
+
+

@@ -1,3 +1,9 @@
+Version 0.1-4
+
+   o added dbHasCompleted
+
+   o added dbClearResult
+
 Version 0.1-3.2
 
    o more improvements to path handling code (thanks to Chris Chou)
@@ -5,7 +11,7 @@ Version 0.1-3.2
    o the RpgSQL.JAR option has a dot rather than an underscore so that all
      options (RpgSQL.JAR, RpgSQL.dbname, RpgSQL.password) have a dot;
      however, the environment variable RpgSQL_JAR continues to have an 
-	 underscore.
+     underscore.
 
 Version 0.1-3.1
 
