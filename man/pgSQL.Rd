@@ -51,6 +51,10 @@
 # problem creating tables with lower case in the column names
 library(RJDBC)
 
+# You may wish to put something like this into your .Rprofile so
+# you do not have to specify the user and password every time.
+# options(RpgSQL.password = "postgres", RpgSQL.password= "")
+
 # the user/password/dbname used here are actually the defaults
 con <- dbConnect(pgSQL(), user = "postgres", password = "", dbname = "test")
 
