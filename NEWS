@@ -1,3 +1,20 @@
+Version 0.1-5
+
+   o new optional RpgSQL.url, RpgSQL.host and RpgSQL.port options
+
+   o the fetch method has a new optional stringsAsFactors argument
+
+   o dbConnect has new optional host and port arguments.  Thanks to Xiaobo Gu.
+
+   o new dbGetQuery method specific to RpgSQL (rather than using inherited
+     one).  Thanks to Xiaobo Gu.
+
+   o fixed bug triggered when numeric column contained Null
+
+Version 0.1-4.1
+
+   o fixed bug triggered when a Date column contained Null
+
 Version 0.1-4
 
    o added dbHasCompleted

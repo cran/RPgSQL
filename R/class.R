@@ -3,6 +3,12 @@ setClass("pgSQLDriver", contains = "JDBCDriver")
 setClass("pgSQLConnection", contains = "JDBCConnection")
 setClass("pgSQLResult", contains = "JDBCResult")
 
+setMethod("dbGetQuery", signature(conn="pgSQLConnection",
+statement="character"),  def=function(conn, statement, stringsAsFactors =
+TRUE, ...) {
+ r <- dbSendQuery(conn, statement, ...)
+ fetch(r, -1, stringsAsFactors)
+})
 
 pgSQL <- function(driverClass='org.postgresql.Driver', classPath,
 	identifier.quote="\"") {
@@ -80,13 +86,19 @@ pgSQL <- function(driverClass='org.postgresql.Driver', classPath,
 }
 
 setMethod("dbConnect", "pgSQLDriver", def=function(drv, 
-  url = sprintf("jdbc:postgresql:%s:", dbname),
+  url = getOption("RpgSQL.url"),
   user = getOption("RpgSQL.user"),
   password = getOption("RpgSQL.password"),
-  dbname = getOption("RpgSQL.dbname"), ...) {
+  dbname = getOption("RpgSQL.dbname"), 
+  host = getOption("RpgSQL.host"),
+  port = getOption("RpgSQL.port"), ...) {
   if (is.null(user)) user <- "postgres"
   if (is.null(password)) password <- ""
   if (is.null(dbname)) dbname <- "test"
+  if (is.null(host)) host <- "localhost"
+  if (is.null(port)) port <- 5432
+  if (is.null(url)) url <- 
+	sprintf("jdbc:postgresql://%s:%s/%s", host, port, dbname)
   jc <- .jcall("java/sql/DriverManager","Ljava/sql/Connection;","getConnection", as.character(url)[1], as.character(user)[1], as.character(password)[1], check=FALSE)
   if (is.jnull(jc) || !is.jnull(drv@jdrv)) {
     # ok one reason for this to fail is its interaction with rJava's
@@ -144,11 +156,13 @@ setMethod("dbDataType", signature(dbObj="pgSQLConnection", obj = "ANY"),
             else "VARCHAR(255)"
           }, valueClass = "character")
 
-setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, n, ...) {
+setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, n, stringsAsFactors = TRUE, ...) {
   cols <- .jcall(res@md, "I", "getColumnCount")
   if (cols < 1) return(NULL)
   l <- list()
   for (i in 1:cols) {
+	# java.sql.Types defines the constant values for sql types:
+    # http://download.oracle.com/javase/1,5.0/docs/api/constant-values.html
     ct <- .jcall(res@md, "I", "getColumnType", i)
     l[[i]] <- if (ct == -5 | ct ==-6 | (ct >= 2 & ct <= 8)) { 
            numeric()
@@ -165,9 +179,13 @@ setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, 
     j <- j + 1
     for (i in 1:cols) {
       l[[i]][j] <- if (is.numeric(l[[i]])) { 
-          l[[i]][j] <- .jcall(res@jr, "D", "getDouble", i)
+          a <- .jcall(res@jr, "S", "getString", i)
+          l[[i]][j] <- if (is.null(a)) NA else 
+			  .jcall(res@jr, "D", "getDouble", i)
       } else if (inherits(l[[i]], "Date")) {
-        l[[i]][j] <- as.Date(.jcall(res@jr, "S", "getString", i))
+        tentativeDate <- .jcall(res@jr, "S", "getString", i)
+	    if (length(tentativeDate) == 0 || tentativeDate == "0001-01-01 BC") tentativeDate <- NA
+        l[[i]][j] <- as.Date(tentativeDate)
       } else {
         a <- .jcall(res@jr, "S", "getString", i)
         l[[i]][j] <- if (is.null(a)) NA else a
@@ -176,9 +194,9 @@ setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, 
     if (n > 0 && j >= n) break
   }
   if (j)
-    as.data.frame(l, row.names=1:j)
+    as.data.frame(l, row.names=1:j, stringsAsFactors = stringsAsFactors)
   else
-    as.data.frame(l)
+    as.data.frame(l, stringsAsFactors = stringsAsFactors)
 })
 
 setMethod("dbSendQuery", signature(conn="pgSQLConnection", statement="character"),  def=function(conn, statement, ..., list=NULL) {
@@ -204,4 +222,23 @@ setMethod("dbHasCompleted", "JDBCResult",
 			  .jcall(res@jr, "Z", "isAfterLast") },
           valueClass = "logical")
 
+.fillStatementParameters <- function(s, l) {
+  for (i in 1:length(l)) {
+    v <- l[[i]]
+    if (is.na(v)) { # map NAs to NULLs (courtesy of Axel Klenk)
+      sqlType <- if (is.integer(v)) 4 else if (is.numeric(v)) 8 else if (inherits(v, "Date")) 91 else 12
+      .jcall(s, "V", "setNull", i, as.integer(sqlType))
+    } else if (is.integer(v))
+      .jcall(s, "V", "setInt", i, v[1])
+    else if (is.numeric(v))
+      .jcall(s, "V", "setDouble", i, as.double(v)[1])
+	else if (inherits(v, "Date")) {
+	  # da <- .jnew("java/text/SimpleDateFormat", "yyyy-MM-dd")$parse(format(v))
+	  # java.sql.Date jsqlD = java.sql.Date.valueOf( "2010-01-31" );
+	  da <- .jnew("java/sql/Date", .jlong(0))$valueOf(format(v))
+      .jcall(s, "V", "setDate", i, da)
+    } else
+      .jcall(s, "V", "setString", i, as.character(v)[1])
+  }
+}
 
