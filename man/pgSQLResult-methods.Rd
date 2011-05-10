@@ -9,7 +9,9 @@
   \code{fetch} retrieves the content of the result set in the form of a
   data frame. 
  
-  Other methods are inherited from the RJDBC package.
+  Other methods are inherited from the RJDBC package.  Note that \code{fetch}
+  returns a data frame in which strings are converted to factors unless the
+  optional \code{stringsToFactors} argument is \code{FALSE}.
 
   }
 \section{Methods}{

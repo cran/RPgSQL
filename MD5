@@ -1,0 +1,12 @@
+d7c748b54dd5f77174392910d685f5c6 *DESCRIPTION
+76060187032d7212a2cdbfe803cb0e42 *INSTALL
+404bd9aec399ec4429a0f51fc10e52d6 *NAMESPACE
+d6cdcfbe6cf78b907266e6a9ff215b8c *NEWS
+7fb9e26b0b55181cb8aa3513443f6389 *R/class.R
+51bd264054bcad5484075dccdff0f065 *man/pgSQL.Rd
+d7a9e45f61a3295d8f02e2ed258d7236 *man/pgSQLConnection-class.Rd
+25645c51f9a84ea9c896d7a9b904e647 *man/pgSQLConnection-methods.Rd
+c96e9f1131ecd1992a100e7a233709d4 *man/pgSQLDriver-class.Rd
+51bbadfea98a39b17f3a41f338f00441 *man/pgSQLDriver-methods.Rd
+c886c6ddb63ed0ac62502c824570684c *man/pgSQLResult-class.Rd
+5ff8d0cdb5d4ffbcaefe08c97edb5014 *man/pgSQLResult-methods.Rd
