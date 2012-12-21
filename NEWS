@@ -1,3 +1,9 @@
+Version 0.1-6
+
+   o added NAMESPACE file
+   o improved INSTALL file
+   o fetch and dbGetQuery use the default stringsAsFactors=FALSE 
+
 Version 0.1-5
 
    o new optional RpgSQL.url, RpgSQL.host and RpgSQL.port options
