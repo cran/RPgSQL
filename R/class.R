@@ -5,7 +5,7 @@ setClass("pgSQLResult", contains = "JDBCResult")
 
 setMethod("dbGetQuery", signature(conn="pgSQLConnection",
 statement="character"),  def=function(conn, statement, stringsAsFactors =
-TRUE, ...) {
+FALSE, ...) {
  r <- dbSendQuery(conn, statement, ...)
  fetch(r, -1, stringsAsFactors)
 })
@@ -156,7 +156,7 @@ setMethod("dbDataType", signature(dbObj="pgSQLConnection", obj = "ANY"),
             else "VARCHAR(255)"
           }, valueClass = "character")
 
-setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, n, stringsAsFactors = TRUE, ...) {
+setMethod("fetch", signature(res="pgSQLResult", n="numeric"), def=function(res, n, stringsAsFactors = FALSE, ...) {
   cols <- .jcall(res@md, "I", "getColumnCount")
   if (cols < 1) return(NULL)
   l <- list()

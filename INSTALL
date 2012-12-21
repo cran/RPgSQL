@@ -1,5 +1,4 @@
-First install the following.  They all have automated installers on Windows so
-are easy to install.
+First install the following.  (On Windows they all have automated installers.)
 
 - java runtime environment (JRE)
   http://java.sun.com 
@@ -17,8 +16,7 @@ are easy to install.
 After installing RpgSQL you must ensure that it can find the JDBC .jar file.
 This is the only file it needs to know the whereabouts of.  It will search
 the following locations for postgres*.jdbc4.jar and if not found for
-postgres*.jar so ensure that its in one of 
-the following places:
+postgres*.jar so ensure that its in one of the following places:
 
   - the path/filename defined by the global R option RpgSQL.JAR
   - the path/filename defined by the environment variable RpgSQL_JAR
@@ -33,11 +31,9 @@ Alternately the R option RpgSQL.JAR or system environment variable RpgSQL_JAR
 may specify the entire path and filename in which case it will use that rather
 than do a search.
 
-Of course if its already in one of those locations then there is nothing to do.
-
 For example, if the JDBC driver jar file for PostgreSQL is in your home
-directory, you could put this into your ~/.Rprofile file (or
-%userprofile%\Documents\.Rprofile file on Windows): 
+directory, you could put this into your ~/.Rprofile file (or on Windows
+%HOME%\.Rprofile where HOME defaults to %userprofile%\Documents): 
 
 	options(RpgSQL.JAR = "~/postgresql-8.4-701.jdbc4.jar")
 
@@ -50,4 +46,31 @@ specify anything add to the same file these lines:
 
 (That is there are up to 4 lines in all to add to your .Rprofile file.)
 
+In the following examples the settings that we specified are the defaults 
+so they could have been omitted.
+
+The options statements could be placed in the .Rprofile file after which R
+should be restarted.
+
+EXAMPLE 1.
+
+library(RpgSQL)
+options(RpgSQL.JAR = "C:\\Program Files\\PostgreSQL\\pgJDBC")
+con <- dbConnect(pgSQL(), user = "postgresql", password = "", dbname = "test",
+	host = "localhost", port = 5432)
+dbListTables(con)
+dbDisconect(con)
+
+EXAMPLE 2.
+
+library(RpgSQL)
+options(RpgSQL.JAR = "C:\\Program Files\\PostgreSQL\\pgJDBC",
+  RpgSQL.user = "postgresql", 
+  RpgSQL.password = "", 
+  RpgSQL.dbname = "test",
+  RpgSQL.hostname = "localhost", 
+  RpgSQL.port = 5432)
+con <- dbConnect(pgSQL())
+dbListTables(con)
+dbDisconnect(con)
 
