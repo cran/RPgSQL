@@ -1,0 +1,19 @@
+Sat Jan  8 12:34:44 PST 2000
+    Added configure script
+    Minor corrections to Rdoc files
+    Hopefully fixed libpq paths problem
+    Incremented to version 0.3
+
+Sat Dec  4 19:03:23 PST 1999
+    Incremented to version 0.2
+    Overhauled type conversion
+
+Fri Nov 26 22:38:40 PST 1999
+    Added support for extensible user-defined types
+    Removed duplicate code between "insert" and "db.write.table"
+
+Thu Nov 25 11:52:01 PST 1999
+    Places source under CVS
+    Added patches for date and time
+	   types provided by Marek Ancukiewicz
+

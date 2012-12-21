@@ -1,0 +1,24 @@
+SHELL = /bin/sh
+
+.SUFFIXES :
+.SUFFIXES : .c .so
+
+CC = @CC@
+CFLAGS = @CFLAGS@
+# Please send email to keitt@nceas.ucsb.edu if your
+# libpq headers are not in one of these locations!
+CPPFLAGS = -I/usr/include/pgsql -I/usr/include/postgresql \
+	-I/usr/local/include/postgresql -I/usr/local/postgresql/include
+LIBS = @LIBS@
+
+# Fix me (not portable?)
+LDFLAGS = -shared
+
+RPgSQL.so : RPgSQL.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $< $(LIBS)
+
+clean :
+	rm -f *.o *.so
+
+distclean :
+	rm -f *.o *.so Makefile
