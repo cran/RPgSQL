@@ -1,24 +1,26 @@
 SHELL = /bin/sh
 
-.SUFFIXES :
-.SUFFIXES : .c .so
+PACKAGE = RPgSQL
 
-CC = @CC@
-CFLAGS = @CFLAGS@
-# Please send email to keitt@nceas.ucsb.edu if your
-# libpq headers are not in one of these locations!
-CPPFLAGS = -I/usr/include/pgsql -I/usr/include/postgresql \
-	-I/usr/local/include/postgresql -I/usr/local/postgresql/include
+# Autoconf substitutions
+PKG_LDFLAGS = @LDFLAGS@
+PKG_CPPFLAGS = @PKG_CPPFLAGS@
 LIBS = @LIBS@
 
-# Fix me (not portable?)
-LDFLAGS = -shared
+include $(R_HOME)/etc/Makeconf
 
-RPgSQL.so : RPgSQL.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $< $(LIBS)
+# Redefine to eliminate -DHAVE_CONFIG_H and add package cpp flags
+ALL_CPPFLAGS = $(R_XTRA_CPPFLAGS) $(CPPFLAGS) $(PKG_CPPFLAGS)
+
+SHLIB = $(PACKAGE).$(SHLIBEXT)
+SOURCE = $(PACKAGE).c
+
+$(SHLIB) : $(SOURCE)
+	$(CC) $(ALL_CPPFLAGS) $(ALL_CFLAGS) $(PKG_LDFLAGS) \
+		$(SHLIBLDFLAGS) -o $@ $< $(LIBS)
 
 clean :
-	rm -f *.o *.so
+	rm -f $(SHLIB)
 
-distclean :
-	rm -f *.o *.so Makefile
+distclean: clean
+	rm -f Makefile

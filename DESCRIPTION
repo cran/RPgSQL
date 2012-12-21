@@ -1,5 +1,5 @@
 Package: RPgSQL
-Version: 0.3
+Version: 0.4
 Author: Timothy H. Keitt
 Description: Ties data frames to a relational database
 Depends: none

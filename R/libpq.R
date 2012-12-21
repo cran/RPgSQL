@@ -1,7 +1,7 @@
 # -*- R -*-
 # $RCSfile: libpq.R,v $
-# $Date: 2000/01/08 20:38:33 $
-# $Revision: 3.0 $
+# $Date: 2000/01/11 21:48:03 $
+# $Revision: 3.1 $
 # Copyright (C) 1999 Timothy H. Keitt
 # Licence: GPL
 db.connect <- function(host, port, dbname, user, password,
@@ -44,7 +44,7 @@ db.name <- function()
 db.host.name <- function() {
   name <- .C("rpgsql_host_name", name=character(1))$name
   if (name == "")
-    name <- system("hostname", intern=T, ignore.stderr=T)
+    name <- "localhost"
   return(name)
 }
 

@@ -1,7 +1,7 @@
 /* -*- C -*-
  * $RCSfile: RPgSQL.c,v $
- * $Date: 2000/01/08 20:09:24 $
- * $Revision: 1.1.1.1 $
+ * $Date: 2000/01/19 19:16:01 $
+ * $Revision: 1.2 $
  * Copyright (C) 1999 Timothy H. Keitt
  */
 
@@ -140,15 +140,17 @@ rpgsql_get_value(int * const tuple, int * const field, char **value) {
   const int t = *tuple - 1;
   const int f = *field - 1;
   if (result != NULL) {
+#ifdef RPGSQL_BOUNDS_CHECKING
     /* libpq sometimes dumps core when requests are out of bounds */
     if (t < 0 ||
 	f < 0 ||
 	t > PQntuples(result) - 1 ||
 	f > PQnfields(result) - 1) {
       fprintf(stderr, "Warning: request for data out of bounds\n");
-    } else {
-      *value = PQgetvalue(result, t, f);
+      return;
     }
+#endif
+    *value = PQgetvalue(result, t, f);
   }
   return;
 }
@@ -197,3 +199,4 @@ rpgsql_toggle_echo(void) {
     echo = TRUE;
   return;
 }
+
